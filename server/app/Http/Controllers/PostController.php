@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StorePostsRequest;
 use App\Http\Requests\UpdatePostsRequest;
 
@@ -34,7 +35,11 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        return Post::findOrFail($id);
+        $post = Post::find($id);
+        if ($post) {
+            return $post;
+        }
+        return "post not found";
     }
 
     /**
@@ -42,7 +47,15 @@ class PostController extends Controller
      */
     public function update(UpdatePostsRequest $request, string $id)
     {
-        //
+        $query = DB::table('posts')->where('id', $id);
+        if ($query->first()) {
+            $query->update([
+                'title' => $request->title,
+                'description' => $request->description,
+            ]);
+            return "Post updated";
+        }
+        return "Post not found";
     }
 
     /**
@@ -50,6 +63,11 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        return $id;
+        $post = Post::find($id);
+        if ($post) {
+            $post->delete();
+            return "Post deleted";
+        }
+        return "Post not found";
     }
 }

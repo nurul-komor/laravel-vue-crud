@@ -11,7 +11,7 @@ class UpdatePostsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,8 +22,13 @@ class UpdatePostsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required',
-            'description' => 'required',
+            // 'id' => 'required',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            // 'id.required' => 'Target post is not selected',
         ];
     }
 }

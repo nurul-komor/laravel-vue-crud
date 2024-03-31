@@ -10,6 +10,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('posts', [PostController::class, 'index']);
+Route::get('post/{id}', [PostController::class, 'show']);
 Route::post('post/store', [PostController::class, 'store']);
-Route::put('posts/{id}', [PostController::class, 'update']);
-Route::delete('posts/delete/{id)', [PostController::class, 'destroy']);
+Route::patch('post/update/{id}', [PostController::class, 'update']);
+Route::delete('post/delete/{id}', [PostController::class, 'destroy']);
