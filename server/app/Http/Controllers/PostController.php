@@ -23,10 +23,18 @@ class PostController extends Controller
      */
     public function store(StorePostsRequest $request)
     {
+        if ($request->hasFile('image')) {
+            $fileName = time() . '.' . $request->file('image')->getClientOriginalExtension();
+            // Store the uploaded image
+            $imagePath = $request->file('image')->move(public_path('/uploads'),  $fileName);
+        }
+
         Post::create([
             'title' => $request->title,
             'description' => $request->description,
+            'image' => 'uploads/' . $fileName
         ]);
+
         return "Post created";
     }
 

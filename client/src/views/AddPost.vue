@@ -8,18 +8,23 @@ import Title from './components/Title.vue';
         <Title>
             Add Post
         </Title>
-        <form @submit="submit">
+        <form @submit="submit" enctype="multipart/form-data">
             <div class="p-5">
                 <div>
                     <label>Title</label>
                     <br>
-                    <input type="text" v-model="formData.title" class="p-1 px-2">
+                    <input type="text" v-model="input.title" class="p-1 px-2">
+                </div>
+                <div>
+                    <label>Image</label>
+                    <br>
+                    <input type="file" name="image" ref="fileInput" class="p-1 px-2 file">
                 </div>
                 <br>
                 <div>
                     <label>Description</label>
                     <br>
-                    <input type="text" v-model="formData.description" class="p-1 px-2">
+                    <input type="text" v-model="input.description" class="p-1 px-2">
                 </div>
                 <br>
                 <button type="submit" class="bg-blue-400 px-2 py-1 rounded cursor-pointer">Submit</button>
@@ -32,7 +37,7 @@ import Title from './components/Title.vue';
 export default {
     data() {
         return {
-            formData: {
+            input: {
                 title: '',
                 description: '',
             }
@@ -41,13 +46,28 @@ export default {
     methods: {
         submit(e) {
             e.preventDefault();
-            axios.post(`${import.meta.env.VITE_SERVER_URI}/api/post/store`, this.formData)
+
+            const formData = new FormData();
+            formData.append('title', this.input.title);
+            formData.append('description', this.input.description);
+            formData.append('image', this.$refs.fileInput.files[0]);
+            axios.post(`${import.meta.env.VITE_SERVER_URI}/api/post/store`, formData, {
+                headers: {
+                    "Accept": "application/json"
+                }
+            })
                 .then(response => {
                     alert(response.data)
+                    // this.resetForm()
+                    // this.$router.push('/')
                 })
                 .catch(error => {
                     console.log(error);
                 })
+        },
+        resetForm() {
+            this.input.title = '';
+            this.input.description = '';
         }
     }
 }

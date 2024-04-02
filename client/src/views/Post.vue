@@ -22,6 +22,9 @@ import axios from 'axios';
                             <th scope="col" class="px-6 py-3">
                                 Image
                             </th>
+                            <th scope="col" class="px-6 py-3">
+                                Action
+                            </th>
 
                         </tr>
                     </thead>
@@ -36,9 +39,16 @@ import axios from 'axios';
                                 {{ post?.description }}
                             </td>
                             <td class="px-6 py-4">
-                                <img />
+                                <img :src="serverUri + '/' + post?.image" :alt="post?.image" style="height:200px" />
                             </td>
+                            <td class="px-6 py-4 space-x-4">
 
+                                <router-link :to="`/edit-post/` + post?.id"
+                                    class="underline text-blue-400 cursor-pointer">Edit
+                                    Post</router-link>
+                                <button @click="deletePost(post?.id)"
+                                    class="underline text-red-400 cursor-pointer">Delete</button>
+                            </td>
                         </tr>
 
                     </tbody>
@@ -53,17 +63,29 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            posts: []
+            posts: [],
+            serverUri: import.meta.env.VITE_SERVER_URI
         }
     },
     mounted() {
-        axios.get(`${import.meta.env.VITE_SERVER_URI}/api/posts`)
-            .then((res) => {
-                this.posts = res.data
+        this.fetchPost()
+    },
+    methods: {
+        fetchPost() {
+            axios.get(`${import.meta.env.VITE_SERVER_URI}/api/posts`)
+                .then((res) => {
+                    this.posts = res.data
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        },
+        deletePost(index) {
+            axios.delete(`${import.meta.env.VITE_SERVER_URI}/api/post/delete/${index}`).then((res) => {
+                this.fetchPost()
+                alert('post deleted successfully')
             })
-            .catch((err) => {
-                console.log(err);
-            })
+        }
     }
 }
 </script>
